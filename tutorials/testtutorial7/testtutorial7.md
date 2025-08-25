@@ -64,9 +64,7 @@ For the detailed step follow the tutorial - Setup Generative AI Hub in SAP AI La
 To install the **SAP Cloud SDK for AI (Python) - generative package** in your system, open your terminal or command prompt and run the following command.
 
 ``` python
-
 pip install sap-ai-sdk-gen
-
 ```
 
 Once the package is installed, you need to configure proxy modules to use the large language models. We recommend setting these values as environment variables for AI Core credentials via a configuration file. The default path for this file is ~/.aicore/config.json.

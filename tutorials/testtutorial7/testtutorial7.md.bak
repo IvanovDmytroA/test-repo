@@ -85,7 +85,7 @@ The configuration file should be:
 
 • Set the copied service key as the `AICORE_SERVICE_KEY` environment variable in your local environment. Maintaining a single-line format will prevent parsing errors.
 
-```
+``` python
 AICORE_SERVICE_KEY='{"clientid":"...","clientsecret":"...","serviceurls":{"AI_API_URL":"..."}}'
 ```
 
@@ -96,7 +96,7 @@ The SDK parses the service key from the environment variable to interact with th
 
 • Install the required packages:
 
-``` 
+``` python
   npm install @sap-ai-sdk/ai-api @sap-ai-sdk/orchestration dotenv
 ```
 
