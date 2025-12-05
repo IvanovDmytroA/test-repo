@@ -4,7 +4,7 @@ description: Set up your development environment with SAP Business Application S
 auto_validation: true
 time: 20 minutes
 tags: [ software-product-function>sap-fiori-elements, software-product-function>sap-fiori-tools, tutorial>beginner, software-product-function>sap-fiori, software-product-function>sap-business-application-studio, software-product-function>sap-cloud-application-programming-model, software-product-function>sap-business-technology-platform ]
-primary_tag: products>sap-fiori
+primary_tag: software-product-function>sap-fiori
 contributors: [ Hitesh Parmar>https://github.com/hitesh-parmar, Joachim Fiess>https://github.com/jo-fiess ]
 ---
 ## Prerequisites
