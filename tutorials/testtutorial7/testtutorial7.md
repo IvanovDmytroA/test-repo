@@ -3,7 +3,7 @@ title: Prepare Your Development Environment for SAP Fiori Elements
 description: Set up your development environment with SAP Business Application Studio to create an SAP Fiori elements application based on the SAP Cloud Application Programming Model.
 auto_validation: true
 time: 20 minutes
-tags: [ software-product-function>sap-fiori-elements, software-product-function>sap-fiori-tools, tutorial>beginner, software-product-function>sap-fiori, software-product-function>sap-business-application-studio, software-product-function>sap-cloud-application-programming-model ]
+tags: [ software-product-function>sap-fiori-elements, software-product-function>sap-fiori-tools, tutorial>beginner, software-product-function>sap-fiori, software-product-function>sap-business-application-studio, software-product-function>sap-cloud-application-programming-model, software-product-function>sap-business-technology-platform ]
 primary_tag: products>sap-fiori
 contributors: [ Hitesh Parmar>https://github.com/hitesh-parmar, Joachim Fiess>https://github.com/jo-fiess ]
 ---
@@ -20,7 +20,7 @@ Click [here](https://cap.cloud.sap/docs/about/) for more information about the S
 
 ---
 
-### Learn about the global accounts and subaccounts needed
+### Learn about the global accounts and subaccounts needed 2
 
 The following figure shows the system landscape recommended for developing, operating and maintaining SaaS applications on SAP Business Technology Platform, ABAP Environment
 ![System Landscape](systemLandscape.png)
