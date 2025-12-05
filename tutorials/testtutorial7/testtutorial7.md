@@ -2,7 +2,6 @@
 parser: v2
 auto_validation: true
 time: 10
-primary_tag: software-product>sap-ai-core
 tags: [ tutorial>intermediate, software-product>sap-ai-core ]
 author_name: Dmytro Ivanov
 author_profile: https://github.com/IvanovDmytroA
