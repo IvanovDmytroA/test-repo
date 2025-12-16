@@ -383,7 +383,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
 2. Enter **Incident-Management** in the **Job Name** field.
 
-#### Add repository 
+### Add repository 
 
 1. Open the value help for the **Repository** field. 
 
@@ -407,7 +407,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
     <!-- border; size:540px --> ![Complete repo addition](./complete-repo-add.png)
 
-#### Configure pipeline and stages
+### Configure pipeline and stages
 
 1. Back in the **General Information** tab, enter **main** in the **Branch** field.
 
@@ -444,7 +444,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
 9. Open the value help for the **Container Registry Credential** field and choose **container-registry-credentials**.
 
-#### Add unit tests and configure release
+### Add unit tests and configure release
 
 1. In the **Additional Unit Tests** section, switch the toggle button to **ON**.  
 
@@ -481,7 +481,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
 2. Enter **Incident-Management** in the **Job Name** field.
 
-#### Add repository 
+### Add repository 
 
 1. Open the value help for the **Repository** field. 
 
@@ -505,7 +505,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
     <!-- border; size:540px --> ![Complete repo addition](./complete-repo-add.png)
 
-#### Configure pipeline and stages
+### Configure pipeline and stages
 
 1. Back in the **General Information** tab, enter **main** in the **Branch** field.
 
@@ -540,7 +540,7 @@ To run the pipeline using the SAP Continuous Integration and Delivery service, y
 
 8. Open the value help for the **Container Registry Credential** field and choose **container-registry-credentials**.
 
-#### Add unit tests and configure release
+### Add unit tests and configure release
 
 1. In the **Additional Unit Tests** section, leave the toggle set to **OFF**.  
 
