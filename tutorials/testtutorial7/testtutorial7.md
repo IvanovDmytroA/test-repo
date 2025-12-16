@@ -1,5 +1,5 @@
 ---
-title: Prepare Your Development Environment for SAP Fiori Elements
+title: Prepare Your Development Environment for SAP Fiori Elements 2
 description: Set up your development environment with SAP Business Application Studio to create an SAP Fiori elements application based on the SAP Cloud Application Programming Model.
 auto_validation: true
 time: 20 minutes
@@ -23,7 +23,7 @@ Click [here](https://cap.cloud.sap/docs/about/) for more information about the S
 
 [ACCORDION-BEGIN [Step 1: ](Create development space)]
 
-1. On the SAP Business Application Studio start page 33333, click **Create Dev Space**.
+1. On the SAP Business Application Studio start page 555, click **Create Dev Space**.
 
 2. On the following page, enter a name for your new development space and choose the application type **Full Stack Cloud Application** from the list.
 
