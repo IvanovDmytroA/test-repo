@@ -1,5 +1,5 @@
 ---
-title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime Dmytro
+title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime Dmytro 22
 description: This section describes how to configure and run a predefined continuous integration and delivery (CI/CD) pipeline that automatically tests, builds, and deploys your code changes to speed up your development and delivery cycles.
 keywords: cap 
 parser: v2
