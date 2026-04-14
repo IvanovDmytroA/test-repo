@@ -1,5 +1,5 @@
 ---
-title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime 1
+title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime
 description: This section describes how to configure and run a predefined continuous integration and delivery (CI/CD) pipeline that automatically tests, builds, and deploys your code changes to speed up your development and delivery cycles.
 keywords: cap 
 parser: v2
@@ -74,57 +74,4 @@ As an administrator in SAP BTP ABAP environment, adjust your communication syste
 2. Open the **Communication Systems** app and access Communication System `ZBPA2X_COM_SYS_S4H`
 
 3. Choose **Edit**
-
-4. In section **OAuth 2.0 Settings** set
-    <ol type="a"><li>Token Endpoint: **OAuth 2.0 Confidential Client Token Service URL** (derived in STEP 1)
-    </li><li>Audience: **OAuth 2.0 SAML2 Audience** (derived in STEP 1)
-
-    ![Set Credentials](set_credentials.png)</li></ol>
-
-5. In section **Users for Outbound Communication**
-    <ol type="a"><li>Choose `+`
-    </li><li>Choose Authentication Method **OAuth 2.0**
-    </li><li>Provide OAuth 2.0 Client ID: Username of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth) (`ZBPA2X_COM_USER`)
-    </li><li>Provide Client Secret: Password of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth). Here you reuse the communication user in order to sign up to the OAuth 2.0 client.
-
-    ![Provide User Credentials](provide_user_credentials.png)
-
-    </li><li>Choose **Create**</li></ol>
-
-6. Choose **Save** to save the communication system
-
-### Modify Communication Arrangement in SAP BTP ABAP environment to use Authentication OAuth 2.0
-
-As an administrator in SAP BTP ABAP environment, configure your communication arrangement to use the authentication **OAuth 2.0** for outbound connectivity.
-
-1. In the SAP Fiori Launchpad, open the **Communication Arrangements** app
-
-2. Navigate to Communication Arrangement `ZBPA2X_CA_OUTBOUND`
-
-3. Choose **Edit**
-
-4. In Section **Outbound Communication**:
-    <ol type="a"><li>Select newly maintained outbound communication user of type OAuth 2.0 for Outbound Communication
-
-    ![Outbound Communication](outbound_communication.png)
-
-    ![Outbound Communication 2](outbound_communication_2.png)
-
-    </li><li>Note down the **SAML2 Issuer**, make sure SAML2 Identifier is **E-Mail**
-
-    ![Note SAML Issuer](note_samlissuer.png)</li></ol>
-
-5. Choose **Save** to save the Communication Arrangement
-
-### Obtain Signing Certificate
-
-As an administrator in SAP BTP ABAP environment, obtain a signing certificate for the system. This certificate will allow the SAP S/4HANA Cloud, public edition system to trust the SAP BTP ABAP environment system.
-
-1. Stay in communication arrangement `ZBPA2X_CA_OUTBOUND`
-
-2. Choose button **Download** > **Download Signing Certificate**
-
-    ![Download Signing Certificate](download_signing_certificate.png)
-
-3. Note down where the file was saved, for later use
 
