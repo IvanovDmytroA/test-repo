@@ -11,282 +11,226 @@ author_name: Svetoslav Pandeliev
 author_profile: https://github.com/slavipande
 ---
 
-## You will learn
+# Integrate SAP BTP ABAP Environment and SAP S/4HANA Cloud, public edition using the OAuth 2.0 SAML Bearer Assertion Flow
 
-- How to initialize a repository in VS Code.
-- How to set up your CI/CD pipeline.
+<!-- description --> Integrate SAP BTP, ABAP environment and SAP S/4HANA Cloud, public edition using the OAuth 2.0 SAML Bearer Assertion Flow. This tutorial takes an existing integration based on Basic Authentication and configures the more complex authentication mechanism to enable the usage of principal propagation.
 
 ## Prerequisites
 
-- You've prepared your application for deployment in SAP BTP, Kyma runtime. Follow the steps in the [Deploy in SAP BTP, Kyma Runtime](deploy-to-kyma) tutorial that is part of the [Deploy a Full-Stack CAP Application in SAP BTP, Kyma Runtime Following SAP BTP Developer’s Guide](https://developers.sap.com/group.deploy-full-stack-cap-kyma-runtime.html) tutorial group.
-- You have an [enterprise global account](https://help.sap.com/docs/btp/sap-business-technology-platform/getting-global-account#loiod61c2819034b48e68145c45c36acba6e) in SAP BTP. To use services for free, you can sign up for an SAP BTPEA (SAP BTP Enterprise Agreement) or a Pay-As-You-Go for SAP BTP global account and use the free tier services only. See [Using Free Service Plans](https://help.sap.com/docs/btp/sap-business-technology-platform/using-free-service-plans?version=Cloud).
-- You have a platform user. See [User and Member Management](https://help.sap.com/docs/btp/sap-business-technology-platform/user-and-member-management).
-- You're an administrator of the global account in SAP BTP.
-- You have a subaccount in SAP BTP to deploy the services and applications.
-- You have one of the following browsers that are supported for working in SAP Business Application Studio:
-    - Mozilla Firefox
-    - Google Chrome
-    - Microsoft Edge
+- This is the third tutorial of this tutorial group. Please complete the tutorial [Implement an Outbound Service Call in SAP BTP ABAP environment](abap-environment-business-partner-outbound-call) and the tutorial [Integrating an SAP BTP, ABAP Environment and an SAP S/4HANA Cloud, public edition System using Basic Authentication](abap-environment-business-partner-basic-auth) before proceeding. The prerequisites of the previous tutorials apply.
+- The custom communication scenario that is used must be enabled for outbound connectivity using **OAuth 2.0**, with **SAML 2.0 Bearer Assertion** as the grant type.
 
-> This tutorial follows the guidance provided in the [SAP BTP Developer's Guide](https://help.sap.com/docs/btp/btp-developers-guide/what-is-btp-developers-guide).
+## You will learn
 
-### Create a repository
+- How to configure **OAuth 2.0** for outbound connectivity.
+- How to configure an **OAuth 2.0 Identity Provider** for inbound connectivity.
+  
+## Intro
 
-To be able to perform the steps for setting up a CI/CD pipeline, you need a public repository. Currently, SAP Continuous Integration and Delivery supports [GitHub](https://github.com/) and [Bitbucket](https://bitbucket.org/) repositories.
+>In this tutorial, all activities on S/4HANA Cloud side will be performed in the **customizing tenant** (100) of your **development system**.
 
-For real application development, you need to consider the right place for your repository.
+### Understand the OAuth 2.0 SAML Bearer Assertion Flow
 
-In this example, we're creating a repository on GitHub. You need a [GitHub](https://github.com/) account for this step. Go ahead and create one if you don't have it yet.
+The **OAuth 2.0 SAML Bearer Assertion** flow works as follows:
 
-1. Create a new GitHub repository in your GitHub account.
+At design time, the OAuth 2.0 client, in our case a system in the SAP BTP, ABAP environment, is signed up to the authorization server, in our case the SAP S/4HANA Cloud, public edition system. The authorization server provides the clients credentials.
 
-1. Under **Repository name**, enter **incident-management**.
+At run time, the OAuth 2.0 client sends the following information to the token endpoint of the authorization server (1):
 
-2. Choose **Create repository**.
+- SAML Bearer Assertion (authorization grant)
+- Client ID
+- Client secret or client certificate
 
-    <!-- border; size:540px --> ![Create repository](./create-repo.png)
+The authorization server authenticates the OAuth 2.0 client with its credentials (client id and client secret or client certificate), validates the SAML Bearer assertion, and, if the SAML Bearer assertion is validated successfully, the authorization server issues an access token (2).  
 
-3. You're directed to the **Quick Setup** page of your new repository. Make sure to copy the URL of the repository as you'll need it in the next steps.
+The OAuth 2.0 client sends the access token to the resource server – in our case the SAP S/4HANA Cloud, public edition system – to access the protected resource (3). The protected resource validates the access token and, if valid, grants access.
 
-    <!-- border; size:540px --> ![Quick Setup](./quick-setup.png)
+![OAuth explanation](Oauth_explanation.png)
 
-### Initialize a repository in VS Code
+The SAML Bearer Assertion is an XML document. It contains the information about the principal to be propagated. This information is stored in the `<saml.Subject><saml:NameID>` element of the XML document. It provides the actual ID and its format.
 
-[OPTION BEGIN [Node.js]]
-1. Make sure you've opened the **incident-management** folder in VS Code.
+To validate the SAML Bearer Assertion, the authorization server needs to trust the issuer of the SAML Bearer assertion – in our case, the system in the SAP BTP, ABAP Environment.
 
-2. Navigate to the **.gitignore** file in your project's root folder and replace the contents of the file with the following code snippet:
+### Get OAuth 2.0 Endpoint Information
 
-    ```
-    node_modules/
-    package-lock.json
-    gen/
+As an administrator in SAP S/4HANA Cloud, public edition system, you will derive the information of the endpoint and audience needed to set up the OAuth 2.0 communication.
 
-    *.mtar
-    mta_archives/
-    mta.yaml
-    ```
-    
-    > If **.gitignore** doesn't exist, create it and paste the preceding code snippet in the newly created file.
+1. Open the SAP Fiori Launchpad of your SAP S/4HANA Cloud, public edition system
 
-3. In VS Code, navigate to **Source Control** on the left and choose **Initialize Repository**.
+2. Open the **Communication Systems** app and access the **Own SAP Cloud System**. You can filter for the **Own SAP Cloud System** via the **Adapt Filters** button.
 
-    <!-- border; size:540px --> ![Initialize repository](./initialize-repo.png)
+    ![Own SAP Cloud System](own_sap_cloud_system.png)
 
-4. Open the three dots menu next to **Source Control** and choose **Remote** &rarr; **Add Remote...**.
+3. In the General section copy the **OAuth 2.0 SAML2 Audience** and **OAuth 2.0 Confidential Client Token Service URL**. Store it for later use.
 
-    <!-- border; size:540px --> ![Add remote](./add-remote.png)
+    ![Copy Credentials](copy_credentials.png)
 
-5. Paste the URL of your repository in the **Provide repository URL** field and press <kbd>Enter<kbd>.
+### Add OAuth 2.0 Client to Communication System in SAP BTP ABAP environment
 
-    <!-- border; size:540px --> ![Provide repo URL](./provide-repo-url.png)
+As an administrator in SAP BTP ABAP environment, adjust your communication system to support the **OAuth 2.0** authentication method for outbound connectivity.
 
-6. Provide a remote name and press <kbd>Enter<kbd>.
+1. Open SAP Fiori Launchpad of your SAP BTP ABAP environment system.  
 
-    <!-- border; size:540px --> ![Provide remote name](./provide-remote-name.png)
+2. Open the **Communication Systems** app and access Communication System `ZBPA2X_COM_SYS_S4H`
 
-7. Stage your changes, add a commit message, and choose **Publish Branch**.
+3. Choose **Edit**
 
-    <!-- border; size:540px --> ![Publish branch](./publish-branch.png)
+4. In section **OAuth 2.0 Settings** set
+    <ol type="a"><li>Token Endpoint: **OAuth 2.0 Confidential Client Token Service URL** (derived in STEP 1)
+    </li><li>Audience: **OAuth 2.0 SAML2 Audience** (derived in STEP 1)
 
-8. Provide your GitHub username and password when prompted. When the changes are pushed, you see your project in your GitHub repository.
-[OPTION END]
+    ![Set Credentials](set_credentials.png)</li></ol>
 
-[OPTION BEGIN [Java]]
-1. Make sure you've opened the **incident-management** folder in VS Code.
+5. In section **Users for Outbound Communication**
+    <ol type="a"><li>Choose `+`
+    </li><li>Choose Authentication Method **OAuth 2.0**
+    </li><li>Provide OAuth 2.0 Client ID: Username of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth) (`ZBPA2X_COM_USER`)
+    </li><li>Provide Client Secret: Password of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth). Here you reuse the communication user in order to sign up to the OAuth 2.0 client.
 
-2. Navigate to the **.gitignore** file in your project's root folder and replace the contents of the file with the following code snippet:
+    ![Provide User Credentials](provide_user_credentials.png)
 
-    ```
-    node_modules/
+    </li><li>Choose **Create**</li></ol>
 
-    *.mtar
-    mta_archives/
-    mta.yaml
-    ```
-    
-    > If **.gitignore** doesn't exist, create it and paste the preceding code snippet in the newly created file.
+6. Choose **Save** to save the communication system
 
-3. In VS Code, navigate to **Source Control** on the left and choose **Initialize Repository**.
+### Modify Communication Arrangement in SAP BTP ABAP environment to use Authentication OAuth 2.0
 
-    <!-- border; size:540px --> ![Initialize repository](./initialize-repo.png)
+As an administrator in SAP BTP ABAP environment, configure your communication arrangement to use the authentication **OAuth 2.0** for outbound connectivity.
 
-4. Open the three dots menu next to **Source Control** and choose **Remote** &rarr; **Add Remote...**.
+1. In the SAP Fiori Launchpad, open the **Communication Arrangements** app
 
-    <!-- border; size:540px --> ![Add remote](./add-remote.png)
+2. Navigate to Communication Arrangement `ZBPA2X_CA_OUTBOUND`
 
-5. Paste the URL of your repository in the **Provide repository URL** field and press <kbd>Enter<kbd>.
+3. Choose **Edit**
 
-    <!-- border; size:540px --> ![Provide repo URL](./provide-repo-url.png)
+4. In Section **Outbound Communication**:
+    <ol type="a"><li>Select newly maintained outbound communication user of type OAuth 2.0 for Outbound Communication
 
-6. Provide a remote name and press <kbd>Enter<kbd>.
+    ![Outbound Communication](outbound_communication.png)
 
-    <!-- border; size:540px --> ![Provide remote name](./provide-remote-name.png)
+    ![Outbound Communication 2](outbound_communication_2.png)
 
-7. Stage your changes, add a commit message, and choose **Publish Branch**.
+    </li><li>Note down the **SAML2 Issuer**, make sure SAML2 Identifier is **E-Mail**
 
-    <!-- border; size:540px --> ![Publish branch](./publish-branch.png)
+    ![Note SAML Issuer](note_samlissuer.png)</li></ol>
 
-8. Provide your GitHub username and password when prompted. When the changes are pushed, you see your project in your GitHub repository.
-[OPTION END]
+5. Choose **Save** to save the Communication Arrangement
 
-### Enable SAP Continuous Integration and Delivery service
+### Obtain Signing Certificate
 
-1. Navigate to your subaccount and choose **Services** &rarr; **Service Marketplace** on the left.
+As an administrator in SAP BTP ABAP environment, obtain a signing certificate for the system. This certificate will allow the SAP S/4HANA Cloud, public edition system to trust the SAP BTP ABAP environment system.
 
+1. Stay in communication arrangement `ZBPA2X_CA_OUTBOUND`
 
-2. Type **Continuous Integration & Delivery** in the search box and choose **Create**.
+2. Choose button **Download** > **Download Signing Certificate**
 
-    <!-- border; size:540px --> ![Continuous Integration and Delivery create service](./cicd-create-service.png)
+    ![Download Signing Certificate](download_signing_certificate.png)
 
-3. In the **New Instance or Subscription** popup select **default** from the **Plan** field.
+3. Note down where the file was saved, for later use
 
-4. Choose **View Subscription** and wait until the status changes to **Subscribed**.
+### Upload Signing Certificate in Communication System in SAP S/4HANA Cloud, public edition
 
-    <!-- border; size:540px --> ![View subscription](./cicd-view-subscription.png)
+As an administrator in SAP S/4HANA Cloud, public edition, configure your communication system to trust the **OAuth 2.0 Identity Provider** of the SAP BTP, ABAP environment system using the previously obtained signing certificate. This will enable **OAuth 2.0** authentication for the exposed remote service.
 
-    <!-- border; size:540px --> ![Status subscribed](./cicd-status-subscribed.png)
+1. Open the SAP Fiori Launchpad of the customizing tenant (100) of your SAP S/4HANA Cloud, public edition development system.
 
-5. In your SAP BTP subaccount, choose **Security** &rarr; **Role Collections** in the left-hand pane.
+2. Access the **Communication Systems** app and open communication system `ZBPA2X_COM_SYS`
 
-6. Choose the role collection **CICD Service Administrator**.
+3. Choose **Edit**
 
-7.  Choose **Edit**.
+4. Enable OAuth2.0 Identity Provider section
+    <ol type="a"><li>Provide **OAuth 2.0 SAML Issuer**: Noted down in STEP 4
+    </li><li>Choose **Upload Signing Certificate** button
+    </li><li>Upload the certificate obtained in STEP 5
+        
+    ![Upload Signing Certificate](upload_signing_certificate.png)</li></ol>
 
-    <!-- border; size:540px --> ![Edit role](./cicd-edit-role.png)
+5. Choose **Save** to save the Communication System
 
-8.  In the **Users** section, enter your user and select the icon to add the user.
+6. An additional User for Inbound Communication with Authentication Method OAuth 2.0 is created automatically
 
-    <!-- border; size:540px --> ![Add user](./cicd-add-user.png)
+    ![Inbound Communication User](inbound_communication_user.png)
 
-    > Keep the setting `Default Identity Provider` unless you have a custom identity provider configured.
+### Modify Communication Arrangement in SAP S/4HANA Cloud, public edition to use Authentication OAuth 2.0
 
-9.  Choose **Save**.
+As an administrator in SAP S/4HANA Cloud, public edition, configure your communication arrangement to use the authentication method **OAuth 2.0** for inbound connectivity.
 
-    You've assigned the **CICD Service Administrator** role collection to your user.
+1. Open communication arrangement `ZBPA2X_CA_INBOUND`
 
-> Log out and log back in to make sure your new role collection is considered.
-    
-> See [Initial Setup](https://help.sap.com/docs/CONTINUOUS_DELIVERY/99c72101f7ee40d0b2deb4df72ba1ad3/719acaf61e4b4bf0a496483155c52570.html) for more details on how to enable the service.
- 
+2. Choose button **Edit**
 
-### Create a Service Account
+3. In the **Inbound Communication** section select newly maintained inbound communication user of type OAuth 2.0 for Inbound Communication
 
-To run the pipeline using the SAP Continuous Integration and Delivery service, you need to create a service account. The service account is a non-human account that provides a distinct identity in your Kyma cluster. The service account authenticates your CI/CD pipeline to access your Kyma cluster. See [Service Accounts](https://kubernetes.io/docs/concepts/security/service-accounts/).
+    ![Set Inbound Communication User](set_inbound_communication_user.png)
 
-1. Navigate to your subaccount and choose **Dashboard URL** under the **Kyma Environment** tab to open Kyma dashboard.
+    ![Set Inbound Communication User 2](set_inbound_communication_user_2.png)
 
-      <!-- border; size:540px --> ![Open Kyma dashboard](./kyma-console.png)
+4. Choose **Save** to save the Communication Arrangement
 
-2. Choose **Namespaces** &rarr; **Create**.
+5. A new button appears: **OAuth 2.0 Details**, this will be needed in the next step
 
-    <!-- border; size:540px --> ![Create namespace](./create-namespace.png)
+    ![Set Inbound Communication User 3](set_inbound_communication_user_3.png)
 
-3. Enter a name for your namespace (for example, **incident-management-namespace**), switch the **Enable Sidecar Injection** toggle **ON**, and choose **Create**.
+### Determine Business Catalogs for Service Authorization
 
-    <!-- border; size:540px --> ![Create namespace dialog](./create-namespace-dialog.png)
+Now you must determine the business catalogs, which enable your S/4HANA Cloud business user for business partner creation. The determination is done as follows:
 
-4. Navigate to the namespace **incident-management-namespace** and choose **Configuration** &rarr; **Service Accounts** on the left.
+1. In the communication arrangement **Inbound Communication** section, choose button **OAuth 2.0 Details**
 
-    <!-- border; size:540px --> ![Open namespace](./open-namespace.png)
+2. In the OAuth 2.0 Details Popup, mark `API_BUSINESS_PARTNER_0001` OAuth 2.0 Scope ID
 
-5. Choose **Create**.
+3. Choose button **Granted by Business Catalogs**
 
-    <!-- border; size:540px --> ![Create service account](./create-service-account.png)
+    ![Granted by Business Catalogs](granted_by_business_catalogs.png)
 
-6. Enter a name for the service account (for example, **incident-management-namespace-service-account**) and choose **Create**.
+4. In the OAuth 2.0 Details popup you can see the business catalogs, which enable your S/4HANA Cloud business user for business partner creation.
 
-    <!-- border; size:540px --> ![Create Service Account dialog](./create-service-account-dialog.png)
+    ![Business Catalogs](business_catalogs.png)
 
-7. Navigate to the service account **incident-management-namespace-service-account** and choose **Generate TokenRequest**.
+    E.g. business catalog `SAP_CMD_BC_BP_MAINT_PC` is contained in business role `BR_BUPA_MASTER_SPECIALIST`. This business role is used in this tutorial to authorize the business user to create a business partner.
 
-    <!-- border; size:540px --> ![Generate token request](./generate-token-request.png)
+5. Choose button **Close**
 
-    This action generates a set of configurations that represent the **kubeconfig** file of the service account.
+### Execute Business Partner Service Call
 
-8. Choose a longer period from the dropdown in the **Expiration seconds** field and copy the **TokenRequest** value. You need it following in the steps. 
+As a developer in **SAP BTP, ABAP environment**, you can now execute the console application.
 
-    <!-- border; size:540px --> ![Copy token request](./copy-token-request.png)
+1. In ADT, open the project for your SAP BTP ABAP environment system
 
-9. Navigate to the **Cluster Details** page and choose **Configuration** &rarr; **Cluster Role Bindings**.
+2. Navigate to the Console Application `ZBPA2X_CL_CLASSRUN`
 
-    <!-- border; size:540px --> ![Cluster details](./cluster-details.png)
+3. If you have previously executed your code, change it to create a business partner with different properties
 
-10. Choose **Create**.
+4. Right click on the class and choose **Run As** > **ABAP Application (Console)**
 
-    <!-- border; size:540px --> ![Create cluster role binding](./create-cluster-role-binding.png)
+5. Note down the Business Partner number that is written to the Console for later use
 
-11. In the **Create Cluster Role Binding** dialog:
+    ![Run Class](run_class.png)
 
-    - Enter a unique name in the **Name** field. For example, **incident-management-namespace-admin**.
-    - Select **cluster-admin** from the dropdown in the **Role** field.
-    - Select **ServiceAccount** from the dropdown in the **Kind** field.
-    - Select **incident-management-namespace** from the dropdown in the **Service Account Namespace** field.
-    - Select **incident-management-namespace-service-account** from the dropdown in the **Service Account Name** field.
-    - Choose **Create**.
+### Verify Business Partner
 
-    <!-- border; size:540px --> ![Create cluster role binding dialog](./create-cluster-role-binding-dialog.png)
+You should now verify that the business partner was successfully created in your SAP S/4HANA Cloud, public edition system.
 
+1. Open the SAP Fiori Launchpad of your SAP S/4HANA Cloud, public edition system.
 
-### Access SAP Continuous Integration and Delivery service
+2. Access the Manage Business Partner Master Data app
 
-1. In your SAP BTP subaccount, navigate to **Services** &rarr; **Instances and Subscriptions** in the left-hand pane.
+3. Enter the created Business Partner number in the related field and press the **Go** button. Check data of the created business service.
 
-2. Choose **Continuous Integration & Delivery**.
+    ![Check Business Partner Data](check_business_partner_data.png)
 
-    <!-- border; size:540px --> ![CI/CD Go to application](./cicd-goto-app.png)
+4. Display column **Created By** via the settings button.
 
-3. Use your SAP BTP global user name and global password to log in to the application.
+    ![Check Business Partner Data 2](check_business_partner_data_2.png)
 
+    ![Check Business Partner Data 3](check_business_partner_data_3.png)
 
-### Add Credentials
+5. Check the data of the created business partner. See that the user was created by the technical communication user, and not by your own business user
 
-1. Choose the **Credentials** tab and choose the icon to add a new credential.
+    ![Check Business Partner Data 3](check_business_partner_data_3.png)
 
-    <!-- border; size:540px --> ![Add new credential](./add-credential.png)
+You have now verified that the integration of SAP BTP, ABAP environment and your SAP S/4HANA Cloud, public edition system, using the OAuth 2.0 SAML Bearer Assertion authentication flow, indeed works.
 
-2. Under **Create Credentials** on the right:
+You will see that the business partner was created by your business user in that system, and not by a technical communication user. Your identity is thus propagated from SAP BTP ABAP environment to the SAP S/4HANA Cloud, public edition system and used to consume the service. For this reason, it is necessary for your S/4HANA Cloud business user to be authorized for business partner creation, which is achieved by assigning business role `BR_BUPA_MASTER_SPECIALIST` to the user. Without the role assignment, the remote service call fails with an authorization error.
 
-    - Enter **github** in the **Credential Name** field.
-    - Select **Basic Authentication** from the dropdown in the **Type** field.
-    - Enter your GitHub user name in the **Username** field.
-    - Enter your GitHub password (or GitHub access token if you've created one) in the **Password** field.
-    - Choose **Create**. 
-
-    <!-- border; size:540px --> ![Create GitHub credential](./create-github-credential.png)
-
-3. Choose the icon to add a new credential again and create a credential for Kyma.
-
-    - Enter **kube-config** in the **Credentials Name** field.
-    - Select **Kubernetes Configuration** from the dropdown in the **Type** field.
-    - Paste the **TokenRequest** value that you copied earlier in Step 4 in the **Content** field.
-    - Choose **Create**.
-
-    <!-- border; size:540px --> ![Create kube-config credential](./create-kube-config-credential.png)
-
-4. Choose the icon to add a new credential again and create a credential for your container registry.
-
-    - Enter **container-registry-credentials** in the **Credentials Name** field.
-    - Select **Container Registry Configuration** from the dropdown in the **Type** field.
-    - Paste your container registry credentials in the **Content** field, removing the `https://` and `/v1/` from the container registry URL in the `auths` object.
-    - Choose **Create**.
-
-    <!-- border; size:540px --> ![Create container registry credential](./create-container-registry-credential.png)
-
-
-    >Here's how to get your container registry credentials in the required format:
-    >
-    >1. Run `docker --config /tmp login docker.io` in a terminal to log in to your container registry.
-    >
-    >1. Run `cat /tmp/config.json` to print your container registry credentials. The output looks like this:
-    >
-    >       ![Container registry credentials](./container-registry-credentials-print1.png)
-    >
-    >2. Open the `/tmp/config.json` in a text editor and delete the `credsStore` key-value pair. 
-    >
-    >3. Run the `docker --config /tmp login docker.io` command and provide your login credentials for your container registry.
-    >
-    >4. Print your container registry credentials again with `cat /tmp/config.json`. The output look like this now:
-    >
-    >       ![Container registry credentials](./container-registry-credentials-print2.png)
-
+### Test yourself
