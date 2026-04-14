@@ -232,5 +232,3 @@ You should now verify that the business partner was successfully created in your
 You have now verified that the integration of SAP BTP, ABAP environment and your SAP S/4HANA Cloud, public edition system, using the OAuth 2.0 SAML Bearer Assertion authentication flow, indeed works.
 
 You will see that the business partner was created by your business user in that system, and not by a technical communication user. Your identity is thus propagated from SAP BTP ABAP environment to the SAP S/4HANA Cloud, public edition system and used to consume the service. For this reason, it is necessary for your S/4HANA Cloud business user to be authorized for business partner creation, which is achieved by assigning business role `BR_BUPA_MASTER_SPECIALIST` to the user. Without the role assignment, the remote service call fails with an authorization error.
-
-### Test yourself
