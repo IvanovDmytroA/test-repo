@@ -1,5 +1,5 @@
 ---
-title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime 2
+title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime 5
 description: This section describes how to configure and run a predefined continuous integration and delivery (CI/CD) pipeline that automatically tests, builds, and deploys your code changes to speed up your development and delivery cycles.
 keywords: cap 
 parser: v2
@@ -80,3 +80,15 @@ As an administrator in SAP BTP ABAP environment, adjust your communication syste
     </li><li>Audience: **OAuth 2.0 SAML2 Audience** (derived in STEP 1)
 
     ![Set Credentials](set_credentials.png)</li></ol>
+	
+5. In section **Users for Outbound Communication**
+    <ol type="a"><li>Choose `+`
+    </li><li>Choose Authentication Method **OAuth 2.0**
+    </li><li>Provide OAuth 2.0 Client ID: Username of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth) (`ZBPA2X_COM_USER`)
+    </li><li>Provide Client Secret: Password of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth). Here you reuse the communication user in order to sign up to the OAuth 2.0 client.
+
+    ![Provide User Credentials](provide_user_credentials.png)
+
+    </li><li>Choose **Create**</li></ol>
+
+6. Choose **Save** to save the communication system
