@@ -1,14 +1,14 @@
 ---
-title: Set Up a CI/CD Pipeline for SAP BTP, Kyma Runtime 88
-description: This section describes how to configure and run a predefined continuous integration and delivery (CI/CD) pipeline that automatically tests, builds, and deploys your code changes to speed up your development and delivery cycles.
+title: Dmytro Test Tutorial
+description: Test description
 keywords: cap 
 parser: v2
 auto_validation: true
 time: 60
 tags: [ tutorial>beginner, software-product-function>sap-cloud-application-programming-model, programming-tool>node-js, software-product>sap-business-technology-platform, software-product>sap-fiori]
 primary_tag: software-product-function>sap-cloud-application-programming-model
-author_name: Svetoslav Pandeliev
-author_profile: https://github.com/slavipande
+author_name: Dmytro Ivanov
+author_profile: https://github.com/IvanovDmytroA
 ---
 
 # Integrate SAP BTP ABAP Environment and SAP S/4HANA Cloud, public edition using the OAuth 2.0 SAML Bearer Assertion Flow
@@ -29,7 +29,7 @@ author_profile: https://github.com/slavipande
 
 >In this tutorial, all activities on S/4HANA Cloud side will be performed in the **customizing tenant** (100) of your **development system**.
 
-### Understand the OAuth 2.0 SAML Bearer Assertion Flow
+### Step 1: Understand the OAuth 2.0 SAML Bearer Assertion Flow
 
 The **OAuth 2.0 SAML Bearer Assertion** flow works as follows:
 
@@ -51,7 +51,7 @@ The SAML Bearer Assertion is an XML document. It contains the information about 
 
 To validate the SAML Bearer Assertion, the authorization server needs to trust the issuer of the SAML Bearer assertion – in our case, the system in the SAP BTP, ABAP Environment.
 
-### Get OAuth 2.0 Endpoint Information
+### Step 2: Get OAuth 2.0 Endpoint Information
 
 As an administrator in SAP S/4HANA Cloud, public edition system, you will derive the information of the endpoint and audience needed to set up the OAuth 2.0 communication.
 
@@ -65,7 +65,7 @@ As an administrator in SAP S/4HANA Cloud, public edition system, you will derive
 
     ![Copy Credentials](copy_credentials.png)
 
-### Add OAuth 2.0 Client to Communication System in SAP BTP ABAP environment
+### Step 3: Add OAuth 2.0 Client to Communication System in SAP BTP ABAP environment
 
 As an administrator in SAP BTP ABAP environment, adjust your communication system to support the **OAuth 2.0** authentication method for outbound connectivity.
 
@@ -78,7 +78,8 @@ As an administrator in SAP BTP ABAP environment, adjust your communication syste
 4. In section **OAuth 2.0 Settings** set
 <ol type="a">
 	<li>Token Endpoint: **OAuth 2.0 Confidential Client Token Service URL** (derived in STEP 1)</li>
-	<li>Audience: **OAuth 2.0 SAML2 Audience** (derived in STEP 1)</li>
+	<li>Audience: **OAuth 2.0 SAML2 Audience** (derived in STEP 1)
+	![Set Credentials](set_credentials.png)</li>
 </ol>
 	
 5. In section **Users for Outbound Communication**
@@ -87,7 +88,6 @@ As an administrator in SAP BTP ABAP environment, adjust your communication syste
 	<li>Choose Authentication Method **OAuth 2.0**</li>
 	<li>Provide OAuth 2.0 Client ID: Username of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth) (`ZBPA2X_COM_USER`)</li>
 	<li>Provide Client Secret: Password of communication user created in [Step 'Create a Communication User' of the previous tutorial](abap-environment-business-partner-basic-auth). Here you reuse the communication user in order to sign up to the OAuth 2.0 client.
-    
 	![Provide User Credentials](provide_user_credentials.png)</li>
 	<li>Choose **Create**</li>
 </ol>
