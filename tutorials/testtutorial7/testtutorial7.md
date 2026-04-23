@@ -1,5 +1,5 @@
 ---
-title: Dmytro Test Tutorial
+title: Dmytro Test
 description: Test description
 keywords: cap 
 parser: v2
@@ -51,7 +51,7 @@ The SAML Bearer Assertion is an XML document. It contains the information about 
 
 To validate the SAML Bearer Assertion, the authorization server needs to trust the issuer of the SAML Bearer assertion – in our case, the system in the SAP BTP, ABAP Environment.
 
-### Step 2: Get OAuth 2.0 Endpoint Information
+### Step 2 : Get OAuth 2.0 Endpoint Information
 
 As an administrator in SAP S/4HANA Cloud, public edition system, you will derive the information of the endpoint and audience needed to set up the OAuth 2.0 communication.
 
@@ -65,7 +65,7 @@ As an administrator in SAP S/4HANA Cloud, public edition system, you will derive
 
     ![Copy Credentials](copy_credentials.png)
 
-### Step 3: Add OAuth 2.0 Client to Communication System in SAP BTP ABAP environment
+### Step 3 Add OAuth 2.0 Client to Communication System : in SAP BTP ABAP environment
 
 As an administrator in SAP BTP ABAP environment, adjust your communication system to support the **OAuth 2.0** authentication method for outbound connectivity.
 
