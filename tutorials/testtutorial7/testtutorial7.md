@@ -6,7 +6,7 @@ parser: v2
 auto_validation: true
 time: 60
 tags: [ tutorial>beginner ]
-primary_tag: software-product-function>sap-cloud-application-programming-model
+primary_tag: tutorial>beginner
 author_name: Dmytro Ivanov
 author_profile: https://github.com/IvanovDmytroA
 ---
